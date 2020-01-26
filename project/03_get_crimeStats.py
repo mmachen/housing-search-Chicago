@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Read data from CSV files
-csv1_path = "C:/Users/mache/Google Drive/python/housingSearchApp/training_v2_data.csv"
+csv1_path = "output/commute_grocery_zillow_data.csv"
 
 # Read in RedFin data
 prop_df = pd.read_csv(csv1_path)
@@ -9,7 +9,7 @@ n = prop_df.shape[0]
 print("Total Number of Homes: " + str(n) + "\n")
 
 # Read in Crime Stats data (2019 - Present)
-csv2_path = "C:/Users/mache/Google Drive/python/housingSearchApp/data_sets/Crimes_-_2019.csv"
+csv2_path = "data_sets/Crimes_-_2019.csv"
 crime = pd.read_csv(csv2_path)
 print(crime.head())
 print(crime.shape)
@@ -81,5 +81,5 @@ for home in range(n):
     prop_df.at[home,'gun_cnt'] = len(li)
 
 # Write the new cleaned dataset to directory
-csv3_path = "C:/Users/mache/Google Drive/python/housingSearchApp/training_v3_data.csv"
+csv3_path = "output/temporary_data.csv"
 prop_df.to_csv(csv3_path,index=False)
