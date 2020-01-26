@@ -10,23 +10,23 @@ n = prop_df.shape[0]
 print("Total Number of Homes: " + str(n) + "\n")
 
 # Read data from CSV files
-csv2_path = "C:/Users/mache/Google Drive/python/housingSearchApp/data_sets/aldi.csv"
+csv2_path = "data_sets/aldi.csv"
 ALDI = pd.read_csv(csv2_path)
 ALDI['NAME'] = "ALDI"
 
-csv2_path = "C:/Users/mache/Google Drive/python/housingSearchApp/data_sets/jewelOsco.csv"
+csv2_path = "data_sets/jewelOsco.csv"
 JEWEL = pd.read_csv(csv2_path)
 JEWEL['NAME'] = "JEWEL"
 
-csv2_path = "C:/Users/mache/Google Drive/python/housingSearchApp/data_sets/mariano.csv"
+csv2_path = "data_sets/mariano.csv"
 MARIANO = pd.read_csv(csv2_path)
 MARIANO['NAME'] = "MARIANO"
 
-csv2_path = "C:/Users/mache/Google Drive/python/housingSearchApp/data_sets/traderJoes.csv"
+csv2_path = "data_sets/traderJoes.csv"
 TJ = pd.read_csv(csv2_path)
 TJ['NAME'] = "TRADERJOE"
 
-csv2_path = "C:/Users/mache/Google Drive/python/housingSearchApp/data_sets/wholeFoods.csv"
+csv2_path = "data_sets/wholeFoods.csv"
 WHOLEFOODS = pd.read_csv(csv2_path)
 WHOLEFOODS['NAME'] = "WHOLEFOODS"
 
