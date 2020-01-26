@@ -12,7 +12,7 @@ from decimal import *
 from pyzillow.pyzillow import ZillowWrapper, GetDeepSearchResults, GetUpdatedPropertyDetails, ZillowError
 
 # Read data from CSV files
-csv1_path = "C:/Users/mache/Google Drive/python/housingSearchApp/commute_grocery_data.csv"
+csv1_path = "output/commute_grocery_data.csv"
 
 # Read in RedFin data
 prop_df = pd.read_csv(csv1_path)
@@ -20,7 +20,7 @@ n = prop_df.shape[0]
 print(n) 
 
 # Initialize Zillow API (limit of 1000 calls per day) 
-csvK_path = "C:/Users/mache/Google Drive/python/delete/input2.txt"
+csvK_path = "delete/input2.txt"
 file = open(csvK_path,"r") 
 API = file.read()
 file.close()
@@ -59,6 +59,6 @@ for home in range(n):
         print("ERROR") 
 
 # Write the new cleaned dataset to directory
-csv2_path = "C:/Users/mache/Google Drive/python/housingSearchApp/commute_grocery_zillow_data.csv"
+csv2_path = "output/commute_grocery_zillow_data.csv"
 prop_df.to_csv(csv2_path,index=False)
 
