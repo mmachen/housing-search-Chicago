@@ -15,7 +15,7 @@ import webbrowser
 #A = now.replace(hour=8,minute=30)
 
 # Read Data
-csv_path1 = "C:/Users/mache/Google Drive/python/housingSearchApp/training_v3_data.csv"
+csv_path1 = "output/commute_grocery_zillow_data.csv"
 prop_df = pd.read_csv(csv_path1)
 n = prop_df.shape[0]
 
@@ -27,10 +27,10 @@ layout = [[sg.Text('Is this house Hot or Not?')],
           [sg.Text('Address:',size=(10,1)),sg.Text(size=(35,1), key='address')],
           [sg.Text('Price:',size=(10,1)),sg.Text(size=(8,1),key='price'),sg.Text('HOA per month:',size=(15,1)),sg.Text(size=(6,1),key='hoa')],
           [sg.Text('# of Beds:',size=(10,1)),sg.Text(size=(8,1),key='beds'),sg.Text('# of Bathrooms:',size=(15,1)),sg.Text(size=(6,1),key='baths')],
-          [sg.Text('Commute Time:',size=(15,1)),sg.Text(size=(6,1),key='kommute')],
+          [sg.Text('Commute Time:',size=(25,1)),sg.Text(size=(6,1),key='kommute')],
           [sg.Text('Commute Steps:',size=(25,1)),sg.Text(size=(50,1),key='kommuteSteps')],
           [sg.Text('Grocery Stores (walking):',size=(25,1)),sg.Text(size=(50,1),key='storeWalk')],
-          [sg.Text('Most Frequent Crime:',size=(25,1)),sg.Text(size=(50,1),key='crime')],
+        #  [sg.Text('Most Frequent Crime:',size=(25,1)),sg.Text(size=(50,1),key='crime')],
           [sg.Button('Hate this house!'), sg.Button('Unsure.'), sg.Button('Love this house!')]]
 
 window = sg.Window('Housing Dating App', layout)
@@ -77,7 +77,7 @@ while True:  # Event Loop
     window['kommute'].update(prop_df['COMMUTE'][i])
     window['kommuteSteps'].update(prop_df['COMMUTE_STEPS'][i])
     window['storeWalk'].update(prop_df['GROCERY_walking'][i])
-    window['crime'].update(prop_df['top5crime'][i])
+   # window['crime'].update(prop_df['top5crime'][i])
 
     i += 1
 
@@ -87,6 +87,6 @@ while True:  # Event Loop
 window.close()
 
 # Write the new cleaned dataset to directory
-csv2_path = "C:/Users/mache/Google Drive/python/housingSearchApp/training_v4_data.csv"
+csv2_path = "output/temp2.csv"
 prop_df.to_csv(csv2_path,index=False)
 
