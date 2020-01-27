@@ -83,3 +83,7 @@ for home in range(n):
 # Write the new cleaned dataset to directory
 csv3_path = "output/temporary_data.csv"
 prop_df.to_csv(csv3_path,index=False)
+
+
+# Create a Crime Score 
+# Rank order crimes and use frequency 
