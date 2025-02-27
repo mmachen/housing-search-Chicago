@@ -6,11 +6,11 @@ from math import exp
 def get_crime_features(redfinHome_LatLon, crimeSet):
     """
     ##################################################################
-    ###    This code generates public transportation to a location
-    ###    using Google's Directions API.
+    ###    This code calculates crime scores using Chicago's Data
+    ###    Portal API. 
     ###    _________________________________________________________
     ###    INPUT:    redfinHome_LatLon - List of latitude / longitude
-    ###              groceryList - Pandas DataFrame of grocery stores 
+    ###              crimeList - Pandas DataFrame of crimes 
     ###    OUTPUT:   Dictionary
     ###################################################################
     """
