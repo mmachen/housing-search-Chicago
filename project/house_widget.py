@@ -7,8 +7,14 @@ import math
 import PySimpleGUI as sg
 import webbrowser
 
+import os 
+os.getcwd()
+os.chdir('G:\\My Drive\\python\\housingSearchApp\\project')
+os.getcwd()
+
 # Read Data
 csv_path1 = "output/final_data.csv"
+#csv_path1 = "output/training.csv"
 prop_df = pd.read_csv(csv_path1)
 n = prop_df.shape[0]
 prop_df.sort_values(by=["PRICE"],ascending=True,inplace=True)
@@ -29,80 +35,79 @@ sg.theme('BluePurple')
 
 # House Fact Column 
 col_fact = [ 
-        [sg.Text('Address:',size=(12,1)),sg.Text(size=(30,1), key='address')],
-        [sg.Text('Location:',size=(12,1)),sg.Text(size=(30,1), key='location')],
-        [sg.Text('Price:',size=(12,1)),sg.Text(size=(30,1),key='price')],
-        [sg.Text('HOA:',size=(12,1)),sg.Text(size=(30,1),key='hoa')],
-        [sg.Text('Tax Year:',size=(12,1)),sg.Text(size=(30,1),key='taxYear')],
-        [sg.Text('Tax Assessed:',size=(12,1)),sg.Text(size=(30,1),key='assessTax')],
-        [sg.Text('SquareFeet:',size=(12,1)),sg.Text(size=(30,1), key='sqft')],
-        [sg.Text('Year Built:',size=(12,1)),sg.Text(size=(30,1),key='year')]
+        [sg.Text('Address:',size=(12,1)),sg.Text(size=(23,1), key='address')],
+        [sg.Text('Location:',size=(12,1)),sg.Text(size=(23,1), key='location')],
+        [sg.Text('Price:',size=(12,1)),sg.Text(size=(23,1),key='price')],
+        [sg.Text('HOA:',size=(12,1)),sg.Text(size=(23,1),key='hoa')],
+        [sg.Text('Year Built:',size=(12,1)),sg.Text(size=(23,1),key='year')]
 ]   
 col_fact2 = [ 
-        [sg.Text('# of Beds:',size=(20,1)),sg.Text(size=(12,1),key='beds')],
-        [sg.Text('# of Bathrooms:',size=(20,1)),sg.Text(size=(12,1),key='baths')],
-        [sg.Text('Sold Date:',size=(20,1)),sg.Text(size=(12,1),key='soldDT')],
-        [sg.Text('Sold Price:',size=(20,1)),sg.Text(size=(12,1),key='soldP')],
-        [sg.Text('Zestimate:',size=(20,1)),sg.Text(size=(12,1),key='zest')],
-        [sg.Text('Est Tax:',size=(20,1)),sg.Text(size=(12,1),key='estTax')],
-        [sg.Text('Property Type:',size=(20,1)),sg.Text(size=(12,1),key="propType")]
-]   
+        [sg.Text('# of Beds:',size=(12,1)),sg.Text(size=(10,1),key='beds')],
+        [sg.Text('# of Bathrooms:',size=(12,1)),sg.Text(size=(10,1),key='baths')],
+        [sg.Text('Sold Date:',size=(12,1)),sg.Text(size=(10,1),key='soldDT')],
+        [sg.Text('Sold Price:',size=(12,1)),sg.Text(size=(10,1),key='soldP')],
+        [sg.Text('SquareFeet:',size=(12,1)),sg.Text(size=(10,1), key='sqft')]
+]
+col_fact3 = [   
+        [sg.Text('Tax Year:',size=(12,1)),sg.Text(size=(10,1),key='taxYear')],
+        [sg.Text('Tax Assessed:',size=(12,1)),sg.Text(size=(10,1),key='assessTax')],
+        [sg.Text('Zestimate:',size=(12,1)),sg.Text(size=(10,1),key='zest')],
+        [sg.Text('Est Tax:',size=(12,1)),sg.Text(size=(10,1),key='estTax')],
+        [sg.Text('Property Type:',size=(12,1)),sg.Text(size=(10,1),key="propType")]
+]
 # Commute Column 
 col_commute1 = [
-        [sg.Text('Commute Time:',size=(14,1)),sg.Text(size=(10,1),key='kommute')],
-        [sg.Text('# of Transfers:',size=(14,1)),sg.Text(size=(10,1),key='kommuteTransfers')],
-        [sg.Text('Walking Time:',size=(14,1)),sg.Text(size=(10,1),key='kommuteWalk')]
+        [sg.Text('Commute Time:',pad=(5,2),size=(12,1)),sg.Text(pad=(5,2),size=(6,1),key='kommute')],
+        [sg.Text('# of Transfers:',pad=(5,2),size=(12,1)),sg.Text(pad=(5,2),size=(6,1),key='kommuteTransfers')],
+        [sg.Text('Walking Time:',pad=(5,2),size=(12,1)),sg.Text(pad=(5,2),size=(6,1),key='kommuteWalk')],
+        [sg.Listbox(values=[],pad=(5,2),size=(20,4),key='kommuteSteps')]
 ] 
-col_commute2 = [
-        [sg.Frame(layout=[[sg.Listbox(values=[],size=(20,5),key='kommuteSteps')]],title="Commute Steps:",title_color="blue")]
-]
 # Grocery Column 
 col_grocery = [
-         [sg.Frame(layout=[[sg.Listbox(values=[],size=(30,5),key='storeWalk')]],title="Grocery Stores(walking):",title_color="blue"),
-         sg.Frame(layout=[[sg.Listbox(values=[],size=(30,5),key='storeDrive')]],title="Grocery Stores(driving):",title_color="blue") ]
+         [sg.Listbox(values=[],pad=(5,5),size=(38,8),key='storeDrive')]
 ]
 # Crime Column 
 col_crime = [ 
-        [sg.Text('GUN',size=(10,1)),sg.Text(size=(10,1),key='crimeGun')],
-        [sg.Text('MURDER',size=(10,1)),sg.Text(size=(10,1),key='crimeMurder')],
-        [sg.Text('DRUG',size=(10,1)),sg.Text(size=(10,1),key='crimeDrug')],
-        [sg.Text('HUMAN',size=(10,1)),sg.Text(size=(10,1),key='crimeHuman')],
-        [sg.Text('THEFT',size=(10,1)),sg.Text(size=(10,1),key='crimeTheft')],
-        [sg.Text('OTHER',size=(10,1)),sg.Text(size=(10,1),key='crimeOther')]
+        [sg.Text('GUN',size=(8,1)),sg.Text(size=(7,1),key='crimeGun')],
+        [sg.Text('MURDER',size=(8,1)),sg.Text(size=(7,1),key='crimeMurder')],
+        [sg.Text('DRUG',size=(8,1)),sg.Text(size=(7,1),key='crimeDrug')],
+        [sg.Text('HUMAN',size=(8,1)),sg.Text(size=(7,1),key='crimeHuman')],
+        [sg.Text('THEFT',size=(8,1)),sg.Text(size=(7,1),key='crimeTheft')],
+        [sg.Text('OTHER',size=(8,1)),sg.Text(size=(7,1),key='crimeOther')]
 ]
 # SocioEconomic Column
 col_socio = [
-        [sg.Text('Percent of aged 25+ without HS diploma:',size=(30,1)),sg.Text(size=(8,1),key='hsDiploma')],
-        [sg.Text('Percent of households below poverty:',size=(30,1)),sg.Text(size=(8,1),key='homePoverty')],
-        [sg.Text('Percent of housing crowded:',size=(30,1)),sg.Text(size=(8,1),key='homeCrowded')],
-        [sg.Text('Percent of aged 16+ unemployed:',size=(30,1)),sg.Text(size=(8,1),key='unemployed')],
-        [sg.Text('Percent aged under 18 or over 64:',size=(30,1)),sg.Text(size=(8,1),key='aged')],
-        [sg.Text('Per capita income:',size=(30,1)),sg.Text(size=(8,1),key='income')]
+        [sg.Text('% aged 25+ without HS diploma',size=(25,1)),sg.Text(size=(8,1),key='hsDiploma')],
+        [sg.Text('% households below poverty',size=(25,1)),sg.Text(size=(8,1),key='homePoverty')],
+        [sg.Text('% housing crowded',size=(25,1)),sg.Text(size=(8,1),key='homeCrowded')],
+        [sg.Text('% aged 16+ unemployed',size=(25,1)),sg.Text(size=(8,1),key='unemployed')],
+        [sg.Text('% aged under 18 or over 64',size=(25,1)),sg.Text(size=(8,1),key='aged')],
+        [sg.Text('Per capita income',size=(25,1)),sg.Text(size=(8,1),key='income')]
 ]
 # Language Column
 col_language = [
-        [sg.Text('Select Language 1: '),
-        sg.InputCombo(tuple(languages), key='lang1', default_value="CHINESE", enable_events=True,size=(20, 1)),
-        sg.Text("",size=(10,1),key="perLang1")],
-        [sg.Text('Select Language 2: '),
-        sg.InputCombo(tuple(languages), key='lang2', default_value="SPANISH", enable_events=True,size=(20, 1)),
-        sg.Text("",size=(10,1),key="perLang2")],
-        [sg.Text('Select Language 3: '),
-        sg.InputCombo(tuple(languages), key='lang3', default_value="POLISH", enable_events=True,size=(20, 1)),
-        sg.Text("",size=(10,1),key="perLang3")],
-        [sg.Text('Select Language 4: '),
-        sg.InputCombo(tuple(languages), key='lang4', default_value="RUSSIAN", enable_events=True,size=(20, 1)),
-        sg.Text("",size=(10,1),key="perLang4")],
-        [sg.Text('Select Language 5: '),
-        sg.InputCombo(tuple(languages), key='lang5', default_value="AFRICAN LANGUAGES", enable_events=True,size=(20, 1)),
-        sg.Text("",size=(10,1),key="perLang5")],
-        [sg.Text('Select Language 6: '),
-        sg.InputCombo(tuple(languages), key='lang6', default_value="GREEK", enable_events=True,size=(20, 1)),
-        sg.Text("",size=(10,1),key="perLang6")]
+        [sg.InputCombo(tuple(languages), key='lang1', default_value="CHINESE", enable_events=True,size=(10, 1)),
+        sg.Text("",size=(8,1),key="perLang1")],
+        [sg.InputCombo(tuple(languages), key='lang2', default_value="SPANISH", enable_events=True,size=(10, 1)),
+        sg.Text("",size=(8,1),key="perLang2")],
+        [sg.InputCombo(tuple(languages), key='lang3', default_value="POLISH", enable_events=True,size=(10, 1)),
+        sg.Text("",size=(8,1),key="perLang3")],
+        [sg.InputCombo(tuple(languages), key='lang4', default_value="RUSSIAN", enable_events=True,size=(10, 1)),
+        sg.Text("",size=(8,1),key="perLang4")],
+        [sg.InputCombo(tuple(languages), key='lang5', default_value="AFRICAN LANGUAGES", enable_events=True,size=(10, 1)),
+        sg.Text("",size=(8,1),key="perLang5")],
+        [sg.InputCombo(tuple(languages), key='lang6', default_value="GREEK", enable_events=True,size=(10, 1)),
+        sg.Text("",size=(8,1),key="perLang6")]
 ]
+# Affordable Rent Column
+col_affordable = [
+    [sg.Text("# of",size=(4,1)),sg.Text(size=(14,1),key="affordNum")],
+    [sg.Text("type",size=(4,1)),sg.Listbox(values=[],size=(14,7),key="affordType")] 
+]
+
 # Button Column 
 col_button = [
-         [sg.Button('',image_filename="images/thumbsDown.png",image_size=(100,100),image_subsample=5,border_width=0,key="dislike"),sg.Text(' ' * 25),
+         [sg.Text(' ' * 25), sg.Button('',image_filename="images/thumbsDown.png",image_size=(100,100),image_subsample=5,border_width=0,key="dislike"),sg.Text(' ' * 25),
           sg.Button('',image_filename="images/unsure.png",image_size=(100,100),image_subsample=3,border_width=0,key="unsure"),sg.Text(' ' * 25),
           sg.Button('',image_filename="images/thumbsUp.png",image_size=(100,100),image_subsample=5,border_width=0,key="like") ]
 ]
@@ -111,34 +116,41 @@ col_score = [
                 [sg.Text("Your Rating: ",size=(15,1)),sg.Text(size=(10,1),key="rate")],
                 [sg.Text("Predicted Score: ",size=(15,1)),sg.Text(size=(10,1),key="score")]
 ]
+# RedFin and Zillow Link Column
+col_website = [
+    [sg.Button("Redfin Link",key="-redfin-"),
+    sg.Button("Zillow Link",key="-zillow-")]
+]
 
-layout = [[sg.Text('Is this house Hot or Not?',font=('Helvetica', 20))],
-          [sg.Frame(layout=[[sg.Text('User Select: '),sg.InputCombo(('MM','XY'),size=(10,1),key='user',default_value='MM',enable_events=True)]],title="SELECT USER",title_color="blue"),
+layout = [[sg.Text('Is this house Hot or Not?',font=('Helvetica', 20)),
+          sg.Frame(layout=[[sg.Text('User Select: '),sg.InputCombo(('MM','XY'),size=(10,1),key='user',default_value='MM',enable_events=True)]],title="SELECT USER",title_color="blue"),
            sg.Frame(layout=[[sg.Text("View Select: "),sg.InputCombo(('ALL','UNRATED', 'RATED'), key='userRated', default_value="ALL", enable_events=True,size=(20, 1))]],
-           title="RATING VIEW",title_color="blue")], 
-          [sg.Text('Sort by: '),
-                sg.InputCombo(('COMMUTE_TIME','WALKING_TIME', 'PRICE'), key='sortBy', default_value="PRICE", enable_events=True,size=(20, 1)), 
+           title="RATING VIEW",title_color="blue"),
+           sg.Text(" "*5),sg.Column(col_score,background_color="red")], 
+          [sg.Text('Filter by: '),
+          sg.InputCombo(local,key='filter', default_value="NONE", enable_events=True,size=(20, 1)),
+          sg.Text('Sort by: '),
+                sg.InputCombo(('ADDRESS','COMMUTE_TIME','WALKING_TIME', 'PRICE','XY_RATING','MM_RATING','PROPERTY_TYPE'), key='sortBy', default_value="PRICE", enable_events=True,size=(20, 1)), 
                 sg.Radio("Ascending",group_id="radio1",key="ascend",default=True,enable_events=True),
-                sg.Radio("Descending",group_id="radio1",key="descend",enable_events=True), 
-                sg.Button('Save Work and Exit'),
-                sg.Text(" "*5),sg.Column(col_score,background_color="red")],
-             [sg.Text('Filter by Location: '),
-          sg.InputCombo(local,key='filter', default_value="NONE", enable_events=True,size=(20, 1))],
+                            sg.Radio("Descending",group_id="radio1",key="descend",enable_events=True),
+                sg.Text(" "*5),sg.Column(col_website)],
           [sg.Frame(layout = [[sg.Listbox(values=prop_df["ADDRESS"],
-                      size=(30, 12), key='-home-', enable_events=True)]],title="Home Selection:",title_color="blue"),
+                      size=(22, 7), key='-home-', enable_events=True)]],title="Home Selection:",title_color="blue"),
                       sg.Frame(layout = [[sg.Column(col_fact,background_color="grey"),
-                      sg.Column(col_fact2,background_color="grey")]],title="General Information:",title_color="blue")
+                      sg.Column(col_fact2,background_color="grey"),sg.Column(col_fact3,background_color="grey")]],title="General Information:",title_color="blue"),
+                      sg.Frame(layout = [[sg.Column(col_language,background_color="orange")]],title="Language Spoken (%)",title_color="blue") 
                        ],
-          [sg.Frame(layout = [[sg.Column(col_commute1,background_color="purple"),
-                                sg.Column(col_commute2,background_color="purple")]],title="Commute Information:",title_color="blue"),
-          sg.Frame(layout = [[sg.Column(col_grocery,background_color="blue")]],title="Grocery Information:",title_color="blue")],
-          [sg.Frame(layout = [[sg.Column(col_crime,background_color="green")]],title="Crime Statistics:",title_color="blue"),
-          sg.Frame(layout = [[sg.Column(col_socio,background_color="magenta")]],title="Socioeconomic Statistics:",title_color="blue"),
-          sg.Frame(layout = [[sg.Column(col_language,background_color="orange")]],title="Language Spoken (%)",title_color="blue")],
-          [sg.Column(col_button,justification="center")]
+            [
+                sg.Frame(layout = [[sg.Column(col_commute1,background_color="purple")]],title="Commute Information:",title_color="blue") , 
+                    sg.Frame(layout = [[sg.Column(col_grocery,background_color="blue")]],title="Grocery Information:",title_color="blue") , 
+                    sg.Frame(layout = [[sg.Column(col_affordable,background_color="yellow")]],title="Affordable Rentals",title_color="blue"),
+                    sg.Frame(layout = [[sg.Column(col_socio,background_color="magenta")]],title="Socioeconomic Statistics:",title_color="blue") , 
+                    sg.Frame(layout = [[sg.Column(col_crime,background_color="green")]],title="Crime Statistics:",title_color="blue")
+            ],
+          [sg.Column(col_button,justification="left")]
           ]
-
-window = sg.Window('Housing Dating App', layout)
+print(sg.Window.get_screen_size()) 
+window = sg.Window('Housing Dating App', layout, resizable=True, size=sg.Window.get_screen_size())
 
 while True:  # Event Loop
 
@@ -151,7 +163,7 @@ while True:  # Event Loop
         print(values["-home-"][0])
         i = prop_df["ADDRESS"].tolist().index(values["-home-"][0])
 
-    if event in ['Save Work and Exit',None]:
+    if event in [None]:
         break
     
     if event in ['sortBy','ascend','descend']:
@@ -215,6 +227,17 @@ while True:  # Event Loop
     if event in ["lang6"]:
         window['perLang6'].update(str(f'{prop_df[values["lang6"]][i]/prop_df["TOTAL"][i]:.2%}'))
 
+    if event in ["-redfin-"] and values["-home-"] not in [None]:
+        try:
+            webbrowser.open(prop_df['URL'][i])
+        except: 
+            pass
+    if event in ["-zillow-"] and values["-home-"] not in [None]:
+        try:
+            webbrowser.open(prop_df['ZILLOW_URL'][i])
+        except:
+            pass
+
     if event in ["-home-","like","unsure","dislike"]:
         if n > 0: 
             id = prop_df_old["ADDRESS"].tolist().index(prop_df["ADDRESS"][i])
@@ -260,7 +283,9 @@ while True:  # Event Loop
             window.Element("-home-").update(set_to_index=i,scroll_to_index=max(0,i-3))
 
         if n > 0: 
-            webbrowser.open(prop_df['URL'][i])
+            
+            #webbrowser.open(prop_df['URL'][i])
+            
             #call_url = prop_df['URL'][i] 
             #mycmd = r'start chrome /new-tab {}'.format(call_url)
             #try: 
@@ -313,14 +338,35 @@ while True:  # Event Loop
                 window['hoa'].update("$")
             else: 
                 window['hoa'].update("$" + str(f'{math.floor(prop_df["HOA"][i]):,}'))
-            window['kommute'].update(str(math.floor(prop_df['COMMUTE_TIME'][i])) + " minutes")
-            window['kommuteSteps'].update(prop_df['COMMUTE_STEPS'][i].split(","))
-            window['kommuteTransfers'].update(prop_df['COMMUTE_NUM_STEPS'][i])
-            window['kommuteWalk'].update(str(math.floor(prop_df['WALKING_TIME'][i])) + " minutes")
-            if pd.isnull(prop_df['GROCERY_WALK'][i]):
-                window['storeWalk'].update("")
+            if pd.isnull(prop_df['COMMUTE_TIME'][i]):
+                window['kommute'].update("")
+            else:
+                window['kommute'].update(str(math.floor(prop_df['COMMUTE_TIME'][i])) + " min")
+            if pd.isnull(prop_df['COMMUTE_STEPS'][i]):
+                window['kommuteSteps'].update("")
+            else:
+                window['kommuteSteps'].update(prop_df['COMMUTE_STEPS'][i].split(","))
+            if pd.isnull(prop_df['COMMUTE_NUM_STEPS'][i]):
+                window['kommuteTransfers'].update("")
+            else:
+                window['kommuteTransfers'].update(prop_df['COMMUTE_NUM_STEPS'][i])
+            if pd.isnull(prop_df['WALKING_TIME'][i]):
+                window['kommuteWalk'].update("")
             else: 
-                window['storeWalk'].update(prop_df['GROCERY_WALK'][i].split(","))
+                window['kommuteWalk'].update(str(math.floor(prop_df['WALKING_TIME'][i])) + " min")
+            if pd.isnull(prop_df['AFFORDABLE_NUM'][i]):
+                window['affordNum'].update("")
+            else:
+                window['affordNum'].update(int(prop_df['AFFORDABLE_NUM'][i]))
+            if pd.isnull(prop_df['AFFORDABLE_DESC'][i]):
+                window['affordType'].update("")
+            else:    
+                window['affordType'].update(list(dict.fromkeys(prop_df['AFFORDABLE_DESC'][i].split(","))))
+
+            #if pd.isnull(prop_df['GROCERY_WALK'][i]):
+            #    window['storeWalk'].update("")
+            #else: 
+            #    window['storeWalk'].update(prop_df['GROCERY_WALK'][i].split(","))
             if pd.isnull(prop_df['GROCERY_DRIVE'][i]):
                 window['storeDrive'].update("")
             else:
@@ -332,9 +378,15 @@ while True:  # Event Loop
             window['crimeOther'].update(str(f'{prop_df["CRIME_OTHER"][i]:.2%}')) 
             window['crimeTheft'].update(str(f'{prop_df["CRIME_THEFT"][i]:.2%}')) 
             if pd.isnull(prop_df[values['user']+"_RATING"][i]):
-                window['rate'].update("Unrated") 
+                window['rate'].update("UNRATED") 
             else:
-                window['rate'].update(prop_df[values['user']+"_RATING"][i])
+                if prop_df[values['user']+"_RATING"][i] == 1:
+                    window['rate'].update("Dislike")
+                elif prop_df[values['user']+"_RATING"][i] == 2: 
+                    window['rate'].update("Unsure") 
+                elif prop_df[values['user']+"_RATING"][i] == 3: 
+                    window['rate'].update("Like") 
+                #window['rate'].update(prop_df[values['user']+"_RATING"][i])
             window['score'].update(prop_df['SCORE'][i])
             if pd.isnull(prop_df["PERCENT AGED 25+ WITHOUT HIGH SCHOOL DIPLOMA"][i]):
                 window['hsDiploma'].update("") 
