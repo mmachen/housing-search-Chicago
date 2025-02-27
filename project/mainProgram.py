@@ -1,9 +1,11 @@
 
+
 import pandas as pd 
 import program_00_get_commute as commute
 import program_01_zillow as zillow 
 import program_02_crime as crime 
 import program_03_googleSearch as search
+import program_04_affordableHousing as afford
 
 if __name__ == '__main__':
 
@@ -14,12 +16,32 @@ if __name__ == '__main__':
     csv1_path = "data_sets/RedFin_raw_data.csv"
     raw_df = pd.read_csv(csv1_path)
     raw_df.columns = ["SALE_TYPE","SOLD_DATE","PROPERTY_TYPE","ADDRESS","CITY","STATE","ZIP","PRICE","BEDS","BATHS","LOCATION","SQFT","LOT_SIZE","YEAR","DAY_ON_MARKET","PRICE_PER_SQFT","HOA","STATUS","NEXT_OPEN_S","NEXT_OPEN_E","URL","SOURCE","MLS","FAVORITE","INTERESTED","LATITUDE","LONGITUDE"]
+    raw_df = raw_df[~pd.isnull(raw_df["ADDRESS"])]
+    raw_df = raw_df[~pd.isnull(raw_df["CITY"])]
 
     # Read in Output data (old) 
     csv2_path = "output/final_data.csv"
     try:
         out_df = pd.read_csv(csv2_path) 
-        prop_df = pd.merge(raw_df,out_df[ out_df.columns.difference(raw_df.columns).tolist() + ["MLS"]  ],on="MLS",how="left")
+
+        # Read in Training Data 
+        csv_training = "output/training.csv" 
+        train = pd.read_csv(csv_training) 
+        # Find Updated Homes
+        updated_homes = pd.merge(train["MLS"],out_df,on="MLS",how="inner") 
+        target = updated_homes["MLS"].tolist()
+        # Get Old Homes Not Updated
+        old_training = train[~train["MLS"].isin(target)]
+        # Get New Homes to be Added
+        new_homes = out_df[~out_df["MLS"].isin(target)]
+        # Concatenate 
+        update = old_training.append(updated_homes,sort=True).append(new_homes,sort=True)
+        update.index = range(len(update))
+        # Write Training to File
+        output_file_train = "output/training.csv"
+        update.to_csv(output_file_train, index=False)
+
+        prop_df = pd.merge(out_df[ out_df.columns.difference(raw_df.columns).tolist() + ["MLS"]  ],raw_df,on="MLS",how="right")
     except: 
         prop_df = raw_df
 
@@ -53,6 +75,22 @@ if __name__ == '__main__':
     crime_df.dropna(inplace=True)
     crime_df.index = range(crime_df.shape[0])
 
+    # Read in Affordable Housing dataset
+    csv_afford = "data_sets/Affordable_Rental_Housing_Developments.csv" 
+    afford_df1 = pd.read_csv(csv_afford) 
+    afford_df1 = afford_df1[["Address","Property Type","Latitude","Longitude"]]
+    afford_df1.columns = ["ADDRESS","DESCRIPTION","LATITUDE","LONGITUDE"] 
+    afford_df1.dropna(inplace=True)
+    # Read in Chicago Housing Authority (CHA) dataset
+    csv_afford2 = "data_sets/CHA_Housing.csv" 
+    afford_df2 = pd.read_csv(csv_afford2) 
+    afford_df2 = afford_df2[["ADDRESS","DESCRIPTION","LATITUDE","LONGITUDE"]]
+    afford_df2.dropna(inplace=True)
+    # Merge them...
+    affordable_df = afford_df1.append(afford_df2) 
+    affordable_df.drop_duplicates(subset = ["LATITUDE","LONGITUDE"],keep=False,inplace=True) 
+    affordable_df.index = range(affordable_df.shape[0])
+
     # Main Update Loop 
     for i in range(0, n, 1):
         print("Percentage Complete: " + str(round((i+1)/n*100, 2)) + "%")
@@ -60,11 +98,14 @@ if __name__ == '__main__':
             home = prop_df['ADDRESS'][i] + " " + prop_df['CITY'][i]
             commute_info = commute.get_directions_from_google_api(redfinData_home = home, API_key = API_google, location_address = work)
             prop_df.at[i,"COMMUTE_NUM_STEPS"] = commute_info["COMMUTE_NUM_STEPS"]
-            tMin = commute_info["COMMUTE_TIME"].split(" ")
-            if len(tMin) > 2: 
-                prop_df.at[i,"COMMUTE_TIME"] = int(tMin[0])*60 + int(tMin[2])  
-            else:  
-                prop_df.at[i,"COMMUTE_TIME"] = int(tMin[0]) 
+            if pd.isnull(commute_info["COMMUTE_TIME"]): 
+                prop_df.at[i,"COMMUTE_TIME"] = commute_info["COMMUTE_TIME"]
+            else: 
+                tMin = commute_info["COMMUTE_TIME"].split(" ")
+                if len(tMin) > 2: 
+                    prop_df.at[i,"COMMUTE_TIME"] = int(tMin[0])*60 + int(tMin[2])  
+                else:  
+                    prop_df.at[i,"COMMUTE_TIME"] = int(tMin[0]) 
             prop_df.at[i,"COMMUTE_STEPS"] = commute_info["COMMUTE_STEPS"]
             prop_df.at[i,"WALKING_TIME"] = commute_info["WALKING_TIME"]
         if pd.isnull(prop_df["GROCERY_CLOSEST_DST"][i]): 
@@ -134,6 +175,11 @@ if __name__ == '__main__':
             prop_df.at[i,"COLLEGE_WALK"] = college["WALK"]
             prop_df.at[i,"COLLEGE_DRIVE_NUM"] = college["DRIVE_NUM"]
             prop_df.at[i,"COLLEGE_DRIVE"] = college["DRIVE"]
+        if pd.isnull(prop_df["AFFORDABLE_NUM"][i]):   
+            homeLatLon = [ prop_df['LATITUDE'][i] , prop_df['LONGITUDE'][i] ]
+            zAfford = afford.get_afford_features(homeLatLon,affordable_df)
+            prop_df.at[i,"AFFORDABLE_NUM"] = zAfford["NUM_AFFORDABLE_HOMES"] 
+            prop_df.at[i,"AFFORDABLE_DESC"] = zAfford["AFFORDABLE_DESC"] 
         if pd.isnull(prop_df["GUN_SCORE"][i]):   
             homeLatLon = [ prop_df['LATITUDE'][i] , prop_df['LONGITUDE'][i] ]
             zCrime = crime.get_crime_features(homeLatLon,crime_df)
